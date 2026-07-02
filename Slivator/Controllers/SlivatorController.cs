@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Slivator.Bases;
+using Slivator.Models;
 
 namespace Slivator.Controllers
 {
@@ -12,13 +14,16 @@ namespace Slivator.Controllers
     /// </summary>
     public class SlivatorController : Controller
     {
+
+        private static readonly InMemoryCache<Guid, FileHolder> _cache = new InMemoryCache<Guid, FileHolder>();
+
         public IActionResult Index()
         {
             return View();
         }
 
         //public IActionResult ListPartial(string filePath)
-        //{ 
+        //{
         //    // todo: на основе данных прочитанных с файла использовать BaseExcelReader
         //}
 
@@ -26,5 +31,13 @@ namespace Slivator.Controllers
         //{
 
         //}
+
+        public IActionResult Process(Guid fileId)
+        {
+            _cache.TryGetValue(fileId, out FileHolder fileHolder);
+
+            var rows = new BaseExcelReader<SlivatorModel>(fileHolder.FilePath())
+                .ReadRows();
+        }
     }
 }

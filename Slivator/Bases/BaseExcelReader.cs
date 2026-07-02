@@ -15,28 +15,28 @@ namespace Slivator.Bases
             _filePath = filePath;
         }
 
-        public List<T> Read()
+        public List<T> ReadRows()
         {
             var result = new List<T>();
 
             if (!File.Exists(_filePath))
                 throw new FileNotFoundException("Файл не найден", _filePath);
 
-            using (var reader = new StreamReader(_filePath))
-            {
-                var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
-                {
-                    HasHeaderRecord = true,
-                    HeaderValidated = null,
-                    MissingFieldFound = null
-                };
+            using var reader = new StreamReader(_filePath);
 
-                using (var csv = new CsvReader(reader, config))
-                {
-                    var records = csv.GetRecords<T>();
-                    result.AddRange(records);
-                }
-            }
+            var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true,
+                HeaderValidated = null,
+                MissingFieldFound = null
+            };
+
+            using var csv = new CsvReader(reader, config);
+
+            var records = csv.GetRecords<T>();
+            result.AddRange(records);
+
+
 
             return result;
         }

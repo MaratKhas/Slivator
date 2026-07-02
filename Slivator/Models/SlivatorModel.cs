@@ -2,5 +2,6 @@
 {
     public class SlivatorModel
     {
+        public string Test { get; set;  }
     }
 }
