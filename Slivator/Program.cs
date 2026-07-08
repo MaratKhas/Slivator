@@ -1,4 +1,14 @@
+using Microsoft.AspNetCore.Http.Features;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//Поддержка работы с файлами
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 100 MB
+    options.MemoryBufferThreshold = int.MaxValue;
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

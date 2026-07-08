@@ -1,0 +1,26 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Загрузка файла";
+}
+
+<h2>Загрузка файла</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info">@ViewBag.Message</div>
+}
+
+<form asp-action="UploadFile" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Выберите файл</label>
+        <input type="file" class="form-control-file" id="file" name="files" multiple>
+    </div>
+    <button type="submit" class="btn btn-primary">Загрузить</button>
+</form>
+
+@* @if (ViewBag.Message != null)
+{
+    <div class="alert-success">
+        @ViewBag.Message
+    </div>
+} *@

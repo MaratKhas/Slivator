@@ -1,42 +1,60 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
+﻿using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Slivator.Bases
 {
-    public class BaseExcelReader<T> where T : new()
+    public class DynamicExcelReaderEPPlus
     {
-        /// <summary>
-        /// Путь к файлу
-        /// </summary>
-        private readonly string _filePath;
-
-        public BaseExcelReader(string filePath)
+        public List<Dictionary<string, string>> ReadRows(string filePath)
         {
-            _filePath = filePath;
-        }
+            var result = new List<Dictionary<string, string>>();
 
-        public List<T> ReadRows()
-        {
-            var result = new List<T>();
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("Файл не найден", filePath);
 
-            if (!File.Exists(_filePath))
-                throw new FileNotFoundException("Файл не найден", _filePath);
+            // Устанавливаем контекст лицензии (для некоммерческого использования)
+            //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage.License.SetNonCommercialPersonal("UserName");
 
-            using var reader = new StreamReader(_filePath);
+            using var package = new ExcelPackage(new FileInfo(filePath));
+            var worksheet = package.Workbook.Worksheets[0]; // Берем первый лист
 
-            var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
+            if (worksheet?.Dimension == null)
+                return result;
+
+            int rowCount = worksheet.Dimension.Rows;
+            int colCount = worksheet.Dimension.Columns;
+
+            // Читаем заголовки (первая строка)
+            var headers = new List<string>();
+            for (int col = 1; col <= colCount; col++)
             {
-                HasHeaderRecord = true,
-                HeaderValidated = null,
-                MissingFieldFound = null
-            };
+                var header = worksheet.Cells[1, col].Text?.Trim();
+                if (string.IsNullOrEmpty(header))
+                    header = $"Column{col}";
+                headers.Add(header);
+            }
 
-            using var csv = new CsvReader(reader, config);
+            // Читаем данные (со второй строки)
+            for (int row = 2; row <= rowCount; row++)
+            {
+                var rowData = new Dictionary<string, string>();
+                bool hasData = false;
 
-            var records = csv.GetRecords<T>();
-            result.AddRange(records);
+                for (int col = 1; col <= colCount; col++)
+                {
+                    var value = worksheet.Cells[row, col].Text;
+                    if (!string.IsNullOrEmpty(value))
+                        hasData = true;
+                    rowData[headers[col - 1]] = value;
+                }
 
-
+                if (hasData)
+                    result.Add(rowData);
+            }
 
             return result;
         }

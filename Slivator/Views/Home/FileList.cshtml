@@ -1,0 +1,24 @@
+﻿@model List<string>
+
+<h2>Доступные файлы</h2>
+
+@if (Model != null && Model.Any())
+{
+    <ul class="list-group">
+        @foreach (var file in Model)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                @file
+                <a href="@Url.Action("Table", new { fileName = file })" class="btn btn-primary btn-sm">
+                    Открыть
+                </a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <div class="alert alert-info">
+        Нет файлов. Загрузите файлы в папку UserData/Files.
+    </div>
+}

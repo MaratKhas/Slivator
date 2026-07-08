@@ -1,7 +1,6 @@
-﻿namespace Slivator.Models
+﻿public class SlivatorModel
 {
-    public class SlivatorModel
-    {
-        public string Test { get; set;  }
-    }
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public string City { get; set; }
 }
