@@ -32,12 +32,13 @@ namespace Slivator.Controllers
 
         //}
 
-        public IActionResult Process(Guid fileId)
-        {
-            _cache.TryGetValue(fileId, out FileHolder fileHolder);
+        //public IActionResult Process(Guid fileId)
+        //{
+        //    _cache.TryGetValue(fileId, out FileHolder fileHolder);
 
-            var rows = new BaseExcelReader<SlivatorModel>(fileHolder.FilePath())
-                .ReadRows();
-        }
+        //    var rows = new BaseExcelReader<SlivatorModel>(fileHolder.FilePath())
+        //        .ReadRows();
+        //    return null;
+        //}
     }
 }

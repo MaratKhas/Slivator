@@ -1,0 +1,41 @@
+﻿@model List<Dictionary<string, string>>
+
+<h2>Таблица: @ViewBag.FileName</h2>
+
+@if (Model != null && Model.Any())
+{
+    // Заголовки берём из первого словаря (все ключи)
+    var headers = Model.First().Keys.ToList();
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                @foreach (var header in headers)
+                {
+                    <th>@header</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    @foreach (var key in headers)
+                    {
+                        <td>@Model[i][key]</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>Всего строк: @Model.Count</p>
+}
+else
+{
+    <div class="alert alert-warning">
+        Файл пуст или не содержит данных.
+    </div>
+}
